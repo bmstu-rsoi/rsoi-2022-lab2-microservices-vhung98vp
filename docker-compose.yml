@@ -20,6 +20,10 @@ services:
     build: ./gateway/
     ports:
       - "8080:8080"
+    environment:
+      RATING_URL: "http://rating:8050"
+      LIBRARY_URL: "http://library:8060"
+      RESERVATION_URL: "http://reservation:8070"
       
   reservation:
     image: reservation

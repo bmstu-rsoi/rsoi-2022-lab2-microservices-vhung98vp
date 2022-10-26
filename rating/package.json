@@ -7,7 +7,7 @@
     "scripts": {
         "start": "node src/index.js",
         "dev": "node src/index.js",
-        "data": "cd src && npx sequelize-cli db:seed:all --url 'postgres://program:test@localhost:5432/ratings'"
+        "data": "cd src && npx sequelize-cli db:seed:all --url 'postgres://program:test@postgres:5432/ratings'"
     },
     "dependencies": {
         "express": "^4.18.1",
