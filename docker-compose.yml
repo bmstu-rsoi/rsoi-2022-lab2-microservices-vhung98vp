@@ -28,6 +28,8 @@ services:
       - "8070:8070"
     depends_on:
       - postgres
+    environment:
+      DATABASE_URL: "postgres://program:test@postgres:5432/reservations"
       
   library:
     image: library
@@ -36,6 +38,8 @@ services:
       - "8060:8060"
     depends_on:
       - postgres
+    environment:
+      DATABASE_URL: "postgres://program:test@postgres:5432/libraries"
       
   rating:
     image: rating
@@ -44,6 +48,8 @@ services:
       - "8050:8050"
     depends_on:
       - postgres
+    environment:
+      DATABASE_URL: "postgres://program:test@postgres:5432/ratings"
 
 volumes:
   db-data:
