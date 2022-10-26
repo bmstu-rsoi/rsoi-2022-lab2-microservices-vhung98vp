@@ -2,7 +2,6 @@ const Rating = require('../models/rating');
 
 class RatingController {
     static getRatingByUsername = async(req, res, next) => {
-        return res.status(200).json({stars: 50});
         let username = req.headers['x-user-name'];
         const rating = await Rating.findOne({where: {username}});
         if(rating){
@@ -13,7 +12,6 @@ class RatingController {
     }
 
     static updateRatingByUsername = async(req, res, next) => {
-        return res.status(200).json({stars: 51});
         let username = req.headers['x-user-name'];
         let rating = await Rating.findOne({where: {username}});
         if(rating){
