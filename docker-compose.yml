@@ -27,7 +27,7 @@ services:
     ports:
       - "8070:8070"
     depends_on:
-      postgres
+      - postgres
       
   library:
     image: library
@@ -35,7 +35,7 @@ services:
     ports:
       - "8060:8060"
     depends_on:
-      postgres
+      - postgres
       
   rating:
     image: rating
@@ -43,7 +43,7 @@ services:
     ports:
       - "8050:8050"
     depends_on:
-      postgres
+      - postgres
 
 volumes:
   db-data:
