@@ -45,9 +45,9 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/api/v1/libraries?page=1&size=10&city=Москва",
+							"raw": "http://localhost:8060/libraries?page=1&size=10&city=Москва",
 							"host": [
-								"{{baseUrl}}"
+								"http://localhost:8060"
 							],
 							"path": [
 								"api",
@@ -78,9 +78,9 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{baseUrl}}/api/v1/libraries?page=1&size=10&city=Москва",
+									"raw": "http://localhost:8060/libraries?page=1&size=10&city=Москва",
 									"host": [
-										"{{baseUrl}}"
+										"http://localhost:8060"
 									],
 									"path": [
 										"api",
