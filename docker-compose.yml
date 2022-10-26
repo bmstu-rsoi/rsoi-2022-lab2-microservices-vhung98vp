@@ -35,15 +35,15 @@ services:
     environment:
       DATABASE_URL: "postgres://program:test@postgres:5432/reservations"
       
-  library:
-    image: library
-    build: ./library/
-    ports:
-      - "8060:8060"
-    depends_on:
-      - postgres
-    environment:
-      DATABASE_URL: "postgres://program:test@postgres:5432/libraries"
+  # library:
+  #   image: library
+  #   build: ./library/
+  #   ports:
+  #     - "8060:8060"
+  #   depends_on:
+  #     - postgres
+  #   environment:
+  #     DATABASE_URL: "postgres://program:test@postgres:5432/libraries"
       
   rating:
     image: rating
