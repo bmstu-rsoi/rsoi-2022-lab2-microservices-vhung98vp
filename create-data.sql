@@ -12,7 +12,7 @@ GRANT ALL PRIVILEGES ON DATABASE ratings TO program;
 
 \c libraries;
 
-CREATE TABLE library
+CREATE TABLE libraries
 (
     id          SERIAL PRIMARY KEY,
     library_uid uuid UNIQUE  NOT NULL,
@@ -35,11 +35,11 @@ CREATE TABLE books
 CREATE TABLE library_books
 (
     book_id         INT REFERENCES books (id),
-    library_id      INT REFERENCES library (id),
+    library_id      INT REFERENCES libraries (id),
     available_count INT NOT NULL
 );
 
-INSERT INTO library(
+INSERT INTO libraries(
 	id, library_uid, name, city, address)
 	VALUES (1, '83575e12-7ce0-48ee-9931-51919ff3c9ee', 'Библиотека имени 7 Непьющих', 'Москва', '2-я Бауманская ул., д.5, стр.1');
 
@@ -52,7 +52,7 @@ INSERT INTO library_books(
     VALUES (1, 1, 1);
 
 \c ratings
-CREATE TABLE rating
+CREATE TABLE ratings
 (
     id       SERIAL PRIMARY KEY,
     username VARCHAR(80) NOT NULL,
@@ -60,12 +60,12 @@ CREATE TABLE rating
         CHECK (stars BETWEEN 0 AND 100)
 );
 
-INSERT INTO rating(
+INSERT INTO ratings(
     id, username, stars)
     VALUES (1, 'Test Max', 50);
 
 \c reservations
-CREATE TABLE reservation
+CREATE TABLE reservations
 (
     id              SERIAL PRIMARY KEY,
     reservation_uid uuid UNIQUE NOT NULL,
