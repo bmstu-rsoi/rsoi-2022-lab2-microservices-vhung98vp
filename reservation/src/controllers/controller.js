@@ -14,8 +14,8 @@ class ReservationController {
             items.push({
                 reservationUid: item.reservation_uid,
                 status: item.status,
-                startDate: item.start_date,
-                tillDate: item.till_date,
+                startDate: item.start_date.toISOString().slice(0, 10),
+                tillDate: item.till_date.toISOString().slice(0, 10),
                 book: bookResp.data,
                 library: libResp.data
             });
@@ -26,38 +26,44 @@ class ReservationController {
     static takeBook = async(req, res, next) => {
         let username = req.headers['x-user-name'];
         let {bookUid, libraryUid, tillDate} = req.body;
-        let rentedTotal = await Reservation.count({where: {username, status: 'RENTED'}});
-        let ratingResp = await axios.get(GATEWAY_URL + '/api/v1/rating', {headers: {'x-user-name': username}})
-        let stars = ratingResp.data.stars;
-        if (stars > rentedTotal){
-            try {
-                await axios.patch(GATEWAY_URL + '/api/v1/books/' + bookUid, {rent: true});
-                const MODEL = {
-                    username: username,
-                    book_uid: bookUid,
-                    library_uid: libraryUid,
-                    status: 'RENTED',
-                    start_date: new Date(),
-                    till_date: tillDate
-                };
-                const reservation = await Reservation.create(MODEL);
-                let libResp = await axios.get(GATEWAY_URL + '/api/v1/libraries/' + libraryUid);
-                let bookResp = await axios.get(GATEWAY_URL + '/api/v1/books/' + bookUid);
-                let resObj = {
-                    reservationUid: reservation.reservation_uid,
-                    status: reservation.status,
-                    startDate: reservation.start_date,
-                    tillDate: reservation.till_date,
-                    book: bookResp.data,
-                    library: libResp.data
+        try{
+            let rentedTotal = await Reservation.count({where: {username, status: 'RENTED'}});
+            let ratingResp = await axios.get(GATEWAY_URL + '/api/v1/rating', {headers: {'x-user-name': username}})
+            let stars = ratingResp.data.stars;
+            if (stars > rentedTotal){
+                try {
+                    await axios.patch(GATEWAY_URL + '/api/v1/books/' + bookUid, {rent: true});
+                    const MODEL = {
+                        username: username,
+                        book_uid: bookUid,
+                        library_uid: libraryUid,
+                        status: 'RENTED',
+                        start_date: new Date(),
+                        till_date: tillDate
+                    };
+                    const reservation = await Reservation.create(MODEL);
+                    let libResp = await axios.get(GATEWAY_URL + '/api/v1/libraries/' + libraryUid);
+                    let bookResp = await axios.get(GATEWAY_URL + '/api/v1/books/' + bookUid);
+                    let resObj = {
+                        reservationUid: reservation.reservation_uid,
+                        status: reservation.status,
+                        startDate: reservation.start_date.toISOString().slice(0, 10),
+                        tillDate: reservation.till_date.toISOString().slice(0, 10),
+                        book: bookResp.data,
+                        library: libResp.data
+                    }
+                    return res.status(200).json(resObj);
+                } catch (error) {
+                    return res.status(400).json({ message: 'Data validation error'})
                 }
-                return res.status(200).json(resObj);
-            } catch (error) {
+            } else {
                 return res.status(400).json({ message: 'Data validation error'})
             }
-        } else {
-            return res.status(400).json({ message: 'Data validation error'})
+        } catch (e) {
+            return res.status(400).json({message: e})
         }
+        
+        
     }
 
     static returnBook = async(req, res, next) => {

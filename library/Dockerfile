@@ -9,4 +9,4 @@ COPY . .
 
 EXPOSE 8060
 
-CMD npm start && npm run data
+CMD npm start

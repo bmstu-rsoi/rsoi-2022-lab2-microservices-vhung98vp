@@ -6,6 +6,8 @@ const database = new Sequelize(process.env.DATABASE_URL || "postgres://program:t
         //     require: true,
         //     rejectUnauthorized: false 
         // }        
+    }, define: {
+        timestamps: false
     }
 });
 
