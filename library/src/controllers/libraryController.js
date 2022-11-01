@@ -8,25 +8,30 @@ class LibraryController {
         let limit = req.query.size || 1;
         let city = req.query.city;
         let offset = (page-1) * limit;
-        const {count, rows} = await Library.findAndCountAll({
-            where: {city},
-            offset,
-            limit
-        });
-        let items = rows.map(item => {
-            return {
-                libraryUid: item.library_uid, 
-                name: item.name,
-                address: item.address,
-                city: item.city
-            }
-        })
-        return res.status(200).json({
-            page: Number(page), 
-            pageSize: Number(limit), 
-            totalElements: count, 
-            items: items
-        });
+        try {
+            const {count, rows} = await Library.findAndCountAll({
+                where: {city},
+                offset,
+                limit
+            });
+            let items = rows.map(item => {
+                return {
+                    libraryUid: item.library_uid, 
+                    name: item.name,
+                    address: item.address,
+                    city: item.city
+                }
+            })
+            return res.status(200).json({
+                page: Number(page), 
+                pageSize: Number(limit), 
+                totalElements: count, 
+                items: items
+            });
+        } catch(error) {
+            return res.status(500).json({message: error});
+        }
+        
     }
 
     static getBooksByLibrary = async(req, res, next) => {
@@ -36,38 +41,43 @@ class LibraryController {
         let libraryUid = req.params.libraryUid;
         let offset = (page-1) * limit;
 
-        const library = await Library.findOne({
-            where: {library_uid: libraryUid}
-        });
-        if(!library) {
-            return res.status(404).json({message: "Library not found"});
+        try {
+            const library = await Library.findOne({
+                where: {library_uid: libraryUid}
+            });
+            if(!library) {
+                return res.status(404).json({message: "Library not found"});
+            }
+            let {count, rows} = await LibraryBooks.findAndCountAll({
+                where: {library_id: library.id},
+                offset,
+                limit
+            });
+            if(!showAll){
+                rows = rows.filter(item => {return item.available_count > 0});
+            }
+            let items = [];
+            for(let row of rows){
+                const book = await Books.findByPk(row.book_id);
+                items.push({
+                    bookUid: book.book_uid,
+                    name: book.name,
+                    author: book.author,
+                    genre: book.genre,
+                    condition: book.condition,
+                    availableCount: row.available_count
+                })
+            }
+            return res.status(200).json({
+                page: Number(page), 
+                pageSize: Number(limit), 
+                totalElements: count, 
+                items
+            });
+        } catch (error) {
+            return res.status(500).json({message: error});
         }
-        let {count, rows} = await LibraryBooks.findAndCountAll({
-            where: {library_id: library.id},
-            offset,
-            limit
-        });
-        if(!showAll){
-            rows = rows.filter(item => {return item.available_count > 0});
-        }
-        let items = [];
-        for(let row of rows){
-            const book = await Books.findByPk(row.book_id);
-            items.push({
-                bookUid: book.book_uid,
-                name: book.name,
-                author: book.author,
-                genre: book.genre,
-                condition: book.condition,
-                availableCount: row.available_count
-            })
-        }
-        return res.status(200).json({
-            page: Number(page), 
-            pageSize: Number(limit), 
-            totalElements: count, 
-            items
-        });
+        
     }
 
     static getLibraryByUid = async(req, res, next) => {
