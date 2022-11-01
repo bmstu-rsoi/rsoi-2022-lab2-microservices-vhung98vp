@@ -19,10 +19,14 @@ services:
     build: ./gateway/
     ports:
       - "8080:8080"
+    depends_on:
+      - reservation
+      - library
+      - rating
     environment:
-      RATING_URL: "http://localhost:8050"
-      LIBRARY_URL: "http://localhost:8060"
-      RESERVATION_URL: "http://localhost:8070"
+      RATING_URL: "http://rating:8050"
+      LIBRARY_URL: "http://library:8060"
+      RESERVATION_URL: "http://reservation:8070"
       
   reservation:
     image: reservation
@@ -33,7 +37,7 @@ services:
       - postgres
     environment:
       DATABASE_URL: "postgres://postgres:postgres@postgres:5432/reservations"
-      GATEWAY_URL: "http://localhost"      
+      GATEWAY_URL: "http://gateway"      
 
   library:
     image: library
